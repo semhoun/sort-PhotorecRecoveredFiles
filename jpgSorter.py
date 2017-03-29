@@ -7,6 +7,7 @@ import shutil
 minEventDelta = 60 * 60 * 24 * 4 # 4 days in seconds
 unknownDateFolderName = "Datum unbekannt"
 
+
 def getMinimumCreationTime(exif_data):
     creationTime = None
     dateTime = exif_data.get('DateTime')
@@ -102,16 +103,64 @@ def writeImages(images, destinationRoot):
             destinationFilePath = os.path.join(destination, fileName)
 
         if not (os.path.exists(destinationFilePath)):
+            os.utime(imageTuple[1], (imageTuple[0], imageTuple[0]))
+            shutil.move(imageTuple[1], destination)
+        else:
+            if (os.path.exists(imageTuple[1])):
+                os.remove(imageTuple[1])
+
+def writeImagesPerDay(images, destinationRoot):
+    sortedImages = sorted(images)
+    today = strftime("%Y%m%d")
+
+    for imageTuple in sortedImages:
+        destination = ""
+        destinationFilePath = ""
+        t = localtime(imageTuple[0])
+        year = strftime("%Y", t)
+        creationDate = strftime("%Y%m%d", t)
+        fileName = ntpath.basename(imageTuple[1])
+
+        if(creationDate == today):
+            createUnknownDateFolder(destinationRoot)
+            destination = os.path.join(destinationRoot, unknownDateFolderName)
+            destinationFilePath = os.path.join(destination, fileName)
+            
+        else:
+            destination = os.path.join(destinationRoot, year, creationDate)
+            if not os.path.exists(destination):
+                os.makedirs(destination)
+            destinationFilePath = os.path.join(destination, fileName)
+
+        if not (os.path.exists(destinationFilePath)):
+            os.utime(imageTuple[1], (imageTuple[0], imageTuple[0]))
             shutil.move(imageTuple[1], destination)
         else:
             if (os.path.exists(imageTuple[1])):
                 os.remove(imageTuple[1])
 
 
-def postprocessImages(imageDirectory):
+def postprocessImages(imageDirectory, oneFolderPerDay=False):
     images = []
     for root, dirs, files in os.walk(imageDirectory):
         for file in files:
-            postprocessImage(images, imageDirectory, file)
+            postprocessImage(images, root, file)
+    if oneFolderPerDay:
+        # create a subfolder per each different day (e.g. 20151230, 20151231, etc)
+        writeImagesPerDay(images, imageDirectory)
+    else:
+        # group images by event, using a time delta
+        writeImages(images, imageDirectory)
 
-    writeImages(images, imageDirectory)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("imageDir", nargs='?', default=os.getcwd(),
+                    help="directory to process")
+    parser.add_argument("-e", "--event", action="store_true",
+                    help="create a subfolder per each event. Images are assigned to the same event if they fit within the defined time delta. This is the default behaviour")
+    parser.add_argument("-d", "--day", action="store_true",
+                    help="create a subfolder per each different day (e.g. 20151230, 20151231, etc). Ignored if -e is provided")
+    args = parser.parse_args()
+    oneFolderPerDay = args.day and not args.event
+    postprocessImages(args.imageDir, oneFolderPerDay)
+
