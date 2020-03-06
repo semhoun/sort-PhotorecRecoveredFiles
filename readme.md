@@ -4,12 +4,19 @@ Photorec does a great job when recovering deleted files. But the result is a hug
 
 This program sPRF helps you sorting your files. First of all, the **files are copied to own folders for each file type**. Second, **jpgs are distinguished by the year, and optionally by month as well** when they have been taken **and by the event**. We thereby define an event as a time span during them photos are taken. It has a delta of 4 days without a photo to another event. If no date from the past can be detected, these jpgs are put into one folder to be sorted manually.
 
+## Quick howto
+
+1. Recover files with photorec
+2. Get this repo et go into it
+3.  Remove duplicate with: .``/rmDuplicate <recovery folder>``
+4. Sort files ``./recovery.py <recovery folder> <dest> -m -k``
+5. Rename jpeg ``./tools/jpgSetDate.py --rename <dest>``
 
 ## Installation
 
 First install the package [exifread](https://pypi.python3.org/pypi/ExifRead):
 
-```pip install exifread```
+```pip3 install exifread```
 
 ## Run the sorter
 
@@ -104,9 +111,9 @@ Examples:
 
 ```
 # sorts JPGs in the current folder and subfolders
-jpgSorter.py
+python3 jpgSorter.py
 # sorts JPGs in /home/user/images and subfolders
-jpgSorter.py /home/user/images
+python3 jpgSorter.py /home/user/images
 # sorts JPGs in /home/user/images and subfolders, creating a separate folder per each different day
-jpgSorter.py --day /home/user/images
+python3 jpgSorter.py --day /home/user/images
 ```
