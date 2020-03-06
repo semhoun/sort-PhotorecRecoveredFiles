@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 Sets the modified time of all the JPG images in a folder (and subfolders), using
 the information stored in Exif headers. It also (optionally) renames the name
