@@ -135,7 +135,7 @@ def writeImagesPerDay(images, destinationRoot):
             
         else:
             destination = os.path.join(destinationRoot, year, creationDate)
-            createPath(destination):
+            createPath(destination)
             destinationFilePath = os.path.join(destination, fileName)
 
         if not (os.path.exists(destinationFilePath)):

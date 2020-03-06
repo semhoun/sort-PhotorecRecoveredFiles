@@ -116,4 +116,6 @@ python3 jpgSorter.py
 python3 jpgSorter.py /home/user/images
 # sorts JPGs in /home/user/images and subfolders, creating a separate folder per each different day
 python3 jpgSorter.py --day /home/user/images
+# sorts JPGs in /home/user/images and subfolders, creating a separate folder per each different month
+python3 jpgSorter.py --month /home/user/images
 ```
