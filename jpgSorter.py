@@ -3,6 +3,7 @@ import ntpath
 from time import localtime, strftime, strptime, mktime
 import shutil
 import exifread
+import argparse
 
 unknownDateFolderName = "date-unknown"
 
@@ -149,7 +150,7 @@ def postprocessImages(imageDirectory, minEventDeltaDays, splitByMonth):
     images = []
     for root, dirs, files in os.walk(imageDirectory):
         for file in files:
-            postprocessImage(images, imageDirectory, file)
+            postprocessImage(images, root, file)
 
     writeImages(images, imageDirectory, minEventDeltaDays, splitByMonth)
 	
@@ -166,15 +167,14 @@ if __name__ == '__main__':
                     help="directory to process")
     parser.add_argument("-e", "--event", action="store_true",
                     help="create a subfolder per each event. Images are assigned to the same event if they fit within the defined time delta. This is the default behaviour")
-	parser.add_argument("-d", '--delta', type=int, default=4,
-					help='minimum delta in days between two days')
+    parser.add_argument("-d", '--delta', type=int, default=4,
+                    help='minimum delta in days between two days')
     parser.add_argument("-a", "--day", action="store_true",
                     help="create a subfolder per each different day (e.g. 20151230, 20151231, etc). Ignored if -e or -m is provided")
-	parser.add_argument("-m", "--month", action="store_true",
+    parser.add_argument("-m", "--month", action="store_true",
                     help="create a subfolder per each different month (e.g. 20151230, 20151231, etc). Ignored if -e is provided")				
     args = parser.parse_args()
     if (args.day and not args.event and not args.month):
-		postprocessImagesOneFolderPerDay(args.imageDir)
-	else:
-		postprocessImages(args.imageDir, args.delta, args.month)
-		postprocessImages(args.imageDir, args.delta, args.month)
+        postprocessImagesOneFolderPerDay(args.imageDir)
+    else:
+        postprocessImages(args.imageDir, args.delta, args.month)

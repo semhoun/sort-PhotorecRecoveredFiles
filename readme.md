@@ -96,11 +96,11 @@ This tool sets the modified time of all the JPG images in a folder (and subfolde
 
 ```
 # sets date for JPGs in the current folder and subfolders
-python3 tools/jpgSetDate.py
+python3 jpgSetDate.py
 # sets date for JPGs in /home/user/images and subfolders
-python3 tools/jpgSetDate.py /home/user/images
+python3 jpgSetDate.py /home/user/images
 # sets the date and renames each JPG, prepending the date to the current name
-python3 tools/jpgSetDate.py --rename /home/user/images
+python3 jpgSetDate.py --rename /home/user/images
 ```
 
 ## jpgSorter tool
