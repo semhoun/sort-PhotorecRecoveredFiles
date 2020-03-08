@@ -102,11 +102,10 @@ def writeImages(images, destinationRoot, minEventDeltaDays, splitByMonth=False):
             destComponents = [v for v in destComponents if v is not None]
             destination = os.path.join(*destComponents)
 
-            # it may be possible that an event covers 2 years.
+            # it may be possible that an event covers 2 years/month.
             # in such a case put all the images to the event in the old year
             if not (os.path.exists(destination)):
                 destination = previousDestination
-                # destination = os.path.join(destinationRoot, str(int(year) - 1), str(eventNumber))
 
             previousDestination = destination
             destinationFilePath = os.path.join(destination, fileName)
@@ -153,7 +152,7 @@ def postprocessImages(imageDirectory, minEventDeltaDays, splitByMonth):
             postprocessImage(images, root, file)
 
     writeImages(images, imageDirectory, minEventDeltaDays, splitByMonth)
-	
+    
 def postprocessImagesOneFolderPerDay(imageDirectory):
     images = []
     for root, dirs, files in os.walk(imageDirectory):
@@ -165,16 +164,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("imageDir", nargs='?', default=os.getcwd(),
                     help="directory to process")
-    parser.add_argument("-e", "--event", action="store_true",
-                    help="create a subfolder per each event. Images are assigned to the same event if they fit within the defined time delta. This is the default behaviour")
-    parser.add_argument("-d", '--delta', type=int, default=4,
+    parser.add_argument("-e", '--delta', type=int, default=4,
                     help='minimum delta in days between two days')
-    parser.add_argument("-a", "--day", action="store_true",
-                    help="create a subfolder per each different day (e.g. 20151230, 20151231, etc). Ignored if -e or -m is provided")
-    parser.add_argument("-m", "--month", action="store_true",
-                    help="create a subfolder per each different month (e.g. 20151230, 20151231, etc). Ignored if -e is provided")				
+    parser.add_argument("-d", "--days", action="store_true",
+                    help="create a subfolder per each different day (e.g. 20151230, 20151231, etc)")
+    parser.add_argument("-m", "--months", action="store_true",
+                    help="split JPEG files not only by year but by month as well. Ignored if -d is provided")               
     args = parser.parse_args()
-    if (args.day and not args.event and not args.month):
+    if (args.days):
         postprocessImagesOneFolderPerDay(args.imageDir)
     else:
-        postprocessImages(args.imageDir, args.delta, args.month)
+        postprocessImages(args.imageDir, args.delta, args.months)

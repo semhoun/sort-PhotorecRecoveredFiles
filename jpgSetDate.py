@@ -71,7 +71,7 @@ def getImageDate(imagePath):
 
 def processImage(root, image, rename=False):
     imageDate = getImageDate(image)
-    creationDate = strftime("%Y%m%d", localtime(imageDate))
+    creationDate = strftime("%Y%m%d-%H%M", localtime(imageDate))
     fileName = os.path.basename(image)
     newName = os.path.join(root, creationDate + "_" + fileName)
     os.utime(image, (imageDate, imageDate))
